@@ -19,5 +19,8 @@ int main (void) {
     fprintf(psFile, "%c", 0x40);
     fprintf(psFile, "%c", 0x00);
 
+    /* close the file */
+    fclose(psFile);
+
     return 0;
 }
