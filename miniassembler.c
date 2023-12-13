@@ -19,7 +19,15 @@ static void setField(unsigned int uiSrc, unsigned int uiSrcStartBit,
                      unsigned int *puiDest, unsigned int uiDestStartBit,
                      unsigned int uiNumBits)
 {
-   /* Your code here */
+   /* only use the part of uiSrc starting at uiSrcStartBit */
+   uiSrc = uiSrc >> uiSrcStartBit;
+
+   /* only use uiNumBits */
+   uiSrc = uiSrc << (32 - uiNumBits);
+   uiSrc = uiSrc >> (32 - uiNumBits);
+
+   /* insert bits into puiDest starting at uiDestStartBit */
+   *puiDest |= (uiSrc << uiDestStartBit);
 
 }
 
@@ -27,8 +35,18 @@ static void setField(unsigned int uiSrc, unsigned int uiSrcStartBit,
 
 unsigned int MiniAssembler_mov(unsigned int uiReg, int iImmed)
 {
-   /* Your code here */
+   unsigned int uiInstr;
 
+   /* Base Instruction Code */
+   uiInstr = 0x52800000;
+
+   /* register to be inserted in instruction */
+   setField(uiReg, 0, &uiInstr, 0, 5);
+
+   /* immediate value to be inserted in instruction */
+   setField(iImmed, 0, &uiInstr, 5, 16);
+
+   return uiInstr;
 }
 
 /*--------------------------------------------------------------------*/
@@ -59,8 +77,16 @@ unsigned int MiniAssembler_adr(unsigned int uiReg, unsigned long ulAddr,
 unsigned int MiniAssembler_strb(unsigned int uiFromReg,
    unsigned int uiToReg)
 {
-   /* Your code here */
+   unsigned int uiInstr;
 
+   /* Base Instruction Code */
+   uiInstr = 0x39000000;
+
+   /* registers to be inserted in instruction */
+   setField(uiFromReg, 0, &uiInstr, 0, 5);
+   setField(uiToReg, 0, &uiInstr, 5, 5);
+
+   return uiInstr;
 }
 
 /*--------------------------------------------------------------------*/
@@ -68,6 +94,36 @@ unsigned int MiniAssembler_strb(unsigned int uiFromReg,
 unsigned int MiniAssembler_b(unsigned long ulAddr,
    unsigned long ulAddrOfThisInstr)
 {
-   /* Your code here */
+   unsigned int uiInstr;
+   unsigned int uiDisp;
 
+   /* Base Instruction Code */
+   uiInstr = 0x14000000;
+
+   /* displacement to be split into immlo and immhi and inserted */
+   uiDisp = (unsigned int)((ulAddr - ulAddrOfThisInstr) >> 2);
+
+   setField(uiDisp, 0, &uiInstr, 0, 26);
+
+   return uiInstr;
+}
+
+
+/*--------------------------------------------------------------------*/
+
+unsigned int MiniAssembler_bl(unsigned long ulAddr, 
+   unsigned long ulAddrOfThisInstr)
+{
+   unsigned int uiInstr;
+   unsigned int uiDisp;
+
+   /* Base Instruction Code */
+   uiInstr = 0x94000000;
+
+   /* displacement to be split into immlo and immhi and inserted */
+   uiDisp = (unsigned int)((ulAddr - ulAddrOfThisInstr) >> 2);
+
+   setField(uiDisp, 0, &uiInstr, 0, 26);
+
+   return uiInstr;
 }
