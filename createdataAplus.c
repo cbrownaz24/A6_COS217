@@ -19,10 +19,10 @@ int main (void) {
     fprintf(psFile, "%c", 'A');
     fprintf(psFile, "%c", '\0');
 
-    uiCmd = MiniAssembler_adr(0, 0x4200B0, 0x4200B8);
+    uiCmd = MiniAssembler_adr(0, 0x42006E, 0x420070);
     fwrite(&uiCmd, sizeof(unsigned int), 1, psFile);
 
-    uiCmd = MiniAssembler_bl(0x400690, 0x4200C8);
+    uiCmd = MiniAssembler_bl(0x400690, 0x420074);
     fwrite(&uiCmd, sizeof(unsigned int), 1, psFile);
 
     /* 0x420078      | movw0, 'A' */
